@@ -15,11 +15,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
-import javafx.scene.image.Image;
-import javafx.scene.layout.Pane;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class TelaController implements Initializable{
@@ -52,7 +48,38 @@ public class TelaController implements Initializable{
 	// Ações tela
 	@FXML
 	void executar(ActionEvent event) {
+		String op = cbOperacao.getSelectionModel().getSelectedItem();
 		
+		switch (op){
+			case "Get":
+				 System.out.println("Get");
+			break;
+			
+			case "GetNext":
+				System.out.println("GetNext");
+			break;
+			
+			case "Set":
+				System.out.println("Set");
+			break;
+			
+			case "GetBulk":
+				System.out.println("GetBulk");
+			break;
+			
+			case "Walk":
+				System.out.println("Walk");
+			break;
+			
+			case "GetTable":
+				System.out.println("GetTable");
+			break;
+			
+			case "GetDelta":
+				System.out.println("GetDelta");
+			break;
+			
+		}
 	}
 	
 	// Itens de menu
