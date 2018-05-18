@@ -55,9 +55,21 @@ public class TelaController implements Initializable{
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		cbOperacao.setItems(itenscbOperacao);
 		cbOperacao.setTooltip(new Tooltip("Selecione a operação desejada"));
-		TreeItem<String> t1= new TreeItem<>("MIB II");
 		
-		tvMIB.setRoot(t1);
+		// Root Item
+		TreeItem<String> treeroot= new TreeItem<>("MIB II");
+		treeroot.setExpanded(true);
+		tvMIB.setRoot(treeroot);
+		
+        // Itens
+        TreeItem<String> item1 = new TreeItem<String>("teste1");
+        TreeItem<String> item2 = new TreeItem<String>("teste2");
+ 
+        // Add to Root
+        treeroot.getChildren().addAll(item1, item2);
+ 
+        
+		
 
 	}
 
