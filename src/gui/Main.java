@@ -18,7 +18,9 @@ public class Main extends Application {
 		
 		stage.setScene(scene);
 		stage.setTitle("Gerente SNMP");
-		stage.setResizable(false);
+		stage.setResizable(true);
+		stage.setMinHeight(610);
+		stage.setMinWidth(620);
 		stage.show();
 	}
 	

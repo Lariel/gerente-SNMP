@@ -21,11 +21,12 @@ import org.snmp4j.util.TreeEvent;
 import org.snmp4j.util.TreeUtils;
 
 public class SnmpWalk {
-
-	public static void main(String[] args) throws Exception {
+	private String saida;
+	
+	public SnmpWalk() throws Exception {
 		CommunityTarget target = new CommunityTarget();
 		target.setCommunity(new OctetString("public"));
-		target.setAddress(GenericAddress.parse("udp:127.0.0.1/161")); // supply your own IP and port
+		target.setAddress(GenericAddress.parse("udp:127.0.0.1/161"));
 		target.setRetries(2);
 		target.setTimeout(1500);
 		target.setVersion(SnmpConstants.version2c);
@@ -34,15 +35,25 @@ public class SnmpWalk {
 
 		for (Map.Entry<String, String> entry : result.entrySet()) {
 			if (entry.getKey().startsWith(".1.3.6.1.2.1.2.2.1.2.")) {
-				System.out.println("ifDescr" + entry.getKey().replace(".1.3.6.1.2.1.2.2.1.2", "") + ": " + entry.getValue());
+				//System.out.println("ifDescr" + entry.getKey().replace(".1.3.6.1.2.1.2.2.1.2", "") + ": " + entry.getValue());
+				if(saida!=null) {
+					saida=saida+"ifDescr" + entry.getKey().replace(".1.3.6.1.2.1.2.2.1.2", "") + ": " + entry.getValue()+"\n";
+				}else {
+					saida="ifDescr" + entry.getKey().replace(".1.3.6.1.2.1.2.2.1.2", "") + ": " + entry.getValue()+"\n";
+				}				
 			}
 			if (entry.getKey().startsWith(".1.3.6.1.2.1.2.2.1.3.")) {
-				System.out.println("ifType" + entry.getKey().replace(".1.3.6.1.2.1.2.2.1.3", "") + ": " + entry.getValue());
+				//System.out.println("ifType" + entry.getKey().replace(".1.3.6.1.2.1.2.2.1.3", "") + ": " + entry.getValue());
+				if(saida!=null) {
+					saida=saida+"ifType" + entry.getKey().replace(".1.3.6.1.2.1.2.2.1.3", "") + ": " + entry.getValue()+"\n";	
+				}else {
+					saida="ifType" + entry.getKey().replace(".1.3.6.1.2.1.2.2.1.3", "") + ": " + entry.getValue()+"\n";
+				}
 			}
 		}
 	}
 
-	public static Map<String, String> doWalk(String tableOid, Target target) throws IOException {
+	public Map<String, String> doWalk(String tableOid, Target target) throws IOException {
 		Map<String, String> result = new TreeMap<>();
 		TransportMapping<? extends Address> transport = new DefaultUdpTransportMapping();
 		Snmp snmp = new Snmp(transport);
@@ -78,8 +89,11 @@ public class SnmpWalk {
 
 		}
 		snmp.close();
-
 		return result;
+	}
+	
+	public String snmpWalk() {
+		return saida;
 	}
 
 }

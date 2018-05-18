@@ -13,23 +13,19 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.Tooltip;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
 import javafx.stage.Stage;
+import snmp.SnmpGet;
+import snmp.SnmpWalk;
 
 public class TelaController implements Initializable{
 	ObservableList<String> itenscbOperacao = FXCollections.observableArrayList("Get","GetNext","Set","GetBulk","Walk","GetTable","GetDelta");
 
-
-	@FXML // fx:id="lvMIB"
-	private ListView<?> lvMIB; // Value injected by FXMLLoader
-
-	@FXML // fx:id="cbOperacao"
-	private ComboBox<String> cbOperacao; // Value injected by FXMLLoader
-
-	@FXML // fx:id="btExecuta"
-	private Button btExecuta; // Value injected by FXMLLoader
+	// Itens de Menu
 
 	@FXML // fx:id="miClose"
 	private MenuItem miClose; // Value injected by FXMLLoader
@@ -37,51 +33,76 @@ public class TelaController implements Initializable{
 	@FXML // fx:id="miSobre"
 	private MenuItem miSobre; // Value injected by FXMLLoader    
 
+	
+	// AÃ§Ãµes na tela
+
+	@FXML // fx:id="cbOperacao"
+	private ComboBox<String> cbOperacao; // Value injected by FXMLLoader
+
+	@FXML // fx:id="taResult"
+	private TextArea taResult; // Value injected by FXMLLoader
+
+	@FXML // fx:id="btExecuta"
+	private Button btExecuta; // Value injected by FXMLLoader
+
+	@FXML // fx:id="tvMIB"
+	private TreeView<String> tvMIB; // Value injected by FXMLLoader
+
+
+
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		cbOperacao.setItems(itenscbOperacao);
-		cbOperacao.setTooltip(new Tooltip("Selecione a operação desejada"));
+		cbOperacao.setTooltip(new Tooltip("Selecione a operaÃ§Ã£o desejada"));
+		TreeItem<String> t1= new TreeItem<>("MIB II");
+		
+		tvMIB.setRoot(t1);
 
 	}
-	
-	// Ações tela
+
+	// AÃ§Ãµes tela
 	@FXML
-	void executar(ActionEvent event) {
+	void executar(ActionEvent event) throws Exception {
 		String op = cbOperacao.getSelectionModel().getSelectedItem();
-		
+
 		switch (op){
 			case "Get":
-				 System.out.println("Get");
-			break;
-			
+				SnmpGet snmpGet=new SnmpGet();
+				taResult.setText(snmpGet.snmpGet());
+				break;
+	
 			case "GetNext":
-				System.out.println("GetNext");
-			break;
-			
+				taResult.setText("GetNext");
+				break;
+	
 			case "Set":
-				System.out.println("Set");
-			break;
-			
+				taResult.setText("Set");
+				break;
+	
 			case "GetBulk":
-				System.out.println("GetBulk");
-			break;
-			
+				taResult.setText("GetBulk");
+				break;
+	
 			case "Walk":
-				System.out.println("Walk");
-			break;
-			
+				SnmpWalk snmpWalk=new SnmpWalk();
+	
+				taResult.setText(snmpWalk.snmpWalk());
+	
+	
+				break;
+	
 			case "GetTable":
-				System.out.println("GetTable");
-			break;
-			
+				taResult.setText("GetTable");
+				break;
+	
 			case "GetDelta":
-				System.out.println("GetDelta");
-			break;
-			
+				taResult.setText("GetDelta");
+				break;
+	
 		}
 	}
-	
+
 	// Itens de menu
 
 	@FXML
