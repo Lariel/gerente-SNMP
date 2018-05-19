@@ -5,19 +5,28 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TreeView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="560.0" prefWidth="751.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.TelaController">
+<AnchorPane prefHeight="560.0" prefWidth="945.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.TelaController">
    <children>
       <Pane layoutY="-9.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <ComboBox fx:id="cbOperacao" layoutX="269.0" layoutY="56.0" prefHeight="25.0" prefWidth="237.0" promptText="Selecione a operação desejada:" />
-            <Button fx:id="btExecuta" layoutX="518.0" layoutY="56.0" mnemonicParsing="false" onAction="#executar" text="Executa" />
-            <TextArea fx:id="taResult" editable="false" layoutX="269.0" layoutY="101.0" prefHeight="434.0" prefWidth="426.0" />
-            <TreeView fx:id="tvMIB" layoutX="14.0" layoutY="58.0" prefHeight="477.0" prefWidth="200.0" />
+            <ComboBox fx:id="cbOperacao" layoutX="247.0" layoutY="107.0" prefHeight="25.0" prefWidth="237.0" promptText="Selecione a operação desejada:" />
+            <Button fx:id="btExecuta" layoutX="496.0" layoutY="107.0" mnemonicParsing="false" onAction="#executar" text="Executa" />
+            <TextArea fx:id="taResult" editable="false" layoutX="246.0" layoutY="177.0" prefHeight="358.0" prefWidth="654.0" />
+            <TreeView fx:id="tvMIB" layoutX="14.0" layoutY="50.0" prefHeight="485.0" prefWidth="200.0" />
+            <TextField fx:id="tfIp" layoutX="247.0" layoutY="72.0" prefHeight="25.0" prefWidth="237.0" promptText="informe o IP" />
+            <TextField fx:id="tfPorta" layoutX="498.0" layoutY="72.0" prefHeight="25.0" prefWidth="109.0" promptText="informe a porta" />
+            <TextField fx:id="tfComunidade" layoutX="621.0" layoutY="72.0" prefHeight="25.0" prefWidth="284.0" promptText="informe a comunidade" />
+            <Text layoutX="247.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Informações para conexão" />
+            <Text layoutX="246.0" layoutY="169.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Resultados" />
+            <Separator layoutX="247.0" layoutY="144.0" prefHeight="4.0" prefWidth="654.0" />
          </children>
       </Pane>
       <MenuBar layoutX="275.0" layoutY="14.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
