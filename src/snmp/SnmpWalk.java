@@ -21,12 +21,12 @@ import org.snmp4j.util.TreeEvent;
 import org.snmp4j.util.TreeUtils;
 
 public class SnmpWalk {
-	private String saida;
+	private String saida, ip, porta, comunidade;
 	
-	public SnmpWalk() throws Exception {
+	public SnmpWalk(String ip, String porta, String comunidade) throws Exception {
 		CommunityTarget target = new CommunityTarget();
-		target.setCommunity(new OctetString("public"));
-		target.setAddress(GenericAddress.parse("udp:127.0.0.1/161"));
+		target.setCommunity(new OctetString(comunidade));
+		target.setAddress(GenericAddress.parse("udp:"+ip+"/"+porta));
 		target.setRetries(2);
 		target.setTimeout(1500);
 		target.setVersion(SnmpConstants.version2c);

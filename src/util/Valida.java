@@ -21,6 +21,7 @@ public class Valida {
 	}
 	
 	public boolean validarIp(String ip) {
+		if (ip.equals("127.0.0.1")) { return true; }
         if (ip == null) { return false; }
         if (ip.trim().equals("")) { return false; }
         if (ip.indexOf("-") >= 0) { return false; }

@@ -14,20 +14,22 @@ import org.snmp4j.util.*;
  
 
 public class SnmpGet{
-	private String saida;
+	private String saida, ip, porta, comunidade;
 	
-	public SnmpGet() {
+	public SnmpGet(String ip, String porta, String comunidade) {
 		 try {
 	            Snmp snmp4j =  new Snmp(new DefaultUdpTransportMapping());
 	            snmp4j.listen();
-	            Address add = new UdpAddress("127.0.0.1"+"/"+"161");
+	            //Address add = new UdpAddress("192.168.1.102"+"/"+"161");
+	            Address add = new UdpAddress(ip+"/"+porta);
 	            CommunityTarget target = new CommunityTarget();
 	            target.setAddress(add);
 	            target.setTimeout(500);
 	             
 	            target.setRetries(3);
 
-	            target.setCommunity(new OctetString("public"));
+	            //target.setCommunity(new OctetString("public"));
+	            target.setCommunity(new OctetString(comunidade));
 	            target.setVersion(SnmpConstants.version2c);
 	            
 	            PDU request = new PDU();
