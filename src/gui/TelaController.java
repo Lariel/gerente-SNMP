@@ -1,9 +1,11 @@
 package gui;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.ResourceBundle;
+
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -23,9 +25,7 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.stage.Stage;
 
-import snmp.SnmpGet;
-import snmp.SnmpWalk;
-import org.snmp4j.smi.OID;
+import snmp.SnmpManager;
 import util.Valida;
 
 public class TelaController implements Initializable{
@@ -35,10 +35,15 @@ public class TelaController implements Initializable{
 	private HashMap<String, String> simple_oids;
 	private HashMap<String, String> editable_oids;
 	private int porta;
+	private boolean gerenteIniciado=false;
+	private SnmpManager gerente;
 	// Itens de Menu
 
 	@FXML // fx:id="miClose"
 	private MenuItem miClose; // Value injected by FXMLLoader
+	
+	@FXML // fx:id="miLimpaParams"
+    private MenuItem miLimpaParams; // Value injected by FXMLLoader
 
 	@FXML // fx:id="miTeste"
 	private MenuItem miTeste; // Value injected by FXMLLoader
@@ -58,9 +63,9 @@ public class TelaController implements Initializable{
 	@FXML // fx:id="btExecuta"
 	private Button btExecuta; // Value injected by FXMLLoader
 
-	@FXML // fx:id="btLimpaParam"
-	private Button btLimpaParam; // Value injected by FXMLLoader
-
+    @FXML // fx:id="btGerenciar"
+    private Button btGerenciar; // Value injected by FXMLLoader
+    
 	@FXML // fx:id="btLimpaResults"
 	private Button btLimpaResults; // Value injected by FXMLLoader
 
@@ -75,6 +80,9 @@ public class TelaController implements Initializable{
 
 	@FXML // fx:id="tfComunidade"
 	private TextField tfComunidade; // Value injected by FXMLLoader
+    
+	@FXML // fx:id="tfOID"
+    private TextField tfOID; // Value injected by FXMLLoader
 
 
 	@Override
@@ -85,13 +93,16 @@ public class TelaController implements Initializable{
 		tfIp.setTooltip(new Tooltip("IP do host"));
 		tfPorta.setTooltip(new Tooltip("porta 161"));
 		tfComunidade.setTooltip(new Tooltip("public"));
-
+		taResult.setText("");
+		
+		
 		tables_oids = new HashMap<String, String>();
 		simple_oids = new HashMap<String, String>();
 		editable_oids = new HashMap<String, String>();
 		addTableOids();
 		addSimpleOids();
 		addEditableOids();
+		
 
 		// Root Item
 		TreeItem<String> treeroot= new TreeItem<>("MIB II");
@@ -116,16 +127,19 @@ public class TelaController implements Initializable{
 		TreeItem<String> sysObjectID = new TreeItem<String>("sysObjectID");
 
 
-		// Add to Root
+		// Add Root
 		treeroot.getChildren().addAll(system, interfaces, at, ip, icmp, tcp, udp, egp, transmission, snmp, host);
 		system.getChildren().addAll(sysDescr,sysObjectID);
 
 	}
 
 	// Ações tela
-	@FXML
-	void executar(ActionEvent event) throws Exception {
-		if(validador.validarIp(tfIp.getText())==false) { //se for um IP inválido mostra o alerta
+
+    @FXML
+    void gerenciar(ActionEvent event) throws Exception {
+    	//definir a criação do gerente aqui
+    	
+    	if(validador.validarIp(tfIp.getText())==false) { //se for um IP inválido mostra o alerta
 			Alert alert = new Alert(AlertType.WARNING);
 			alert.setTitle("Alerta");
 			alert.setHeaderText("Atenção");
@@ -149,62 +163,90 @@ public class TelaController implements Initializable{
 					Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
 					alert.showAndWait();
 				}else { // senão, se for válido avança
-					String op = cbOperacao.getSelectionModel().getSelectedItem();
-
-					try {
-						switch (op){
-						case "Get":
-							SnmpGet snmpGet=new SnmpGet(tfIp.getText(), tfPorta.getText(), tfComunidade.getText());
-							taResult.setText(snmpGet.snmpGet());
-							break;
-
-						case "GetNext":
-							taResult.setText("GetNext");
-							break;
-
-						case "Set":
-							taResult.setText("Set");
-							break;
-
-						case "GetBulk":
-							taResult.setText("GetBulk");
-							break;
-
-						case "Walk":
-							SnmpWalk snmpWalk=new SnmpWalk(tfIp.getText(), tfPorta.getText(), tfComunidade.getText());
-
-							taResult.setText(snmpWalk.snmpWalk());
-
-
-							break;
-
-						case "GetTable":
-							taResult.setText("GetTable");
-							break;
-
-						case "GetDelta":
-							taResult.setText("GetDelta");
-							break;
-
-						}
-
-
-					} catch (NullPointerException e) {  //exibe alerta caso nenhuma opção seja selecionada para as operações
-						Alert alert = new Alert(AlertType.WARNING);
-						alert.setTitle("Alerta");
-						alert.setHeaderText("Atenção");
-						alert.setContentText("Selecione a operação desejada!");
-						Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-						alert.showAndWait();
-					}
+					gerente = new SnmpManager(tfIp.getText(), tfPorta.getText(), tfComunidade.getText());
+					
+					gerenteIniciado=true;
+					btGerenciar.setText("Gerenciando");
 				}
 			}
+		}
+    }
+	
+	
+	@FXML
+	void executar(ActionEvent event) throws Exception {
+		if(gerenteIniciado) { //gerente snmp foi criado
+			if(validador.validarOID(tfOID.getText())) { //OID do objeto foi inforado
+				String op = cbOperacao.getSelectionModel().getSelectedItem();
+				try {
+					switch (op){
+					case "Get":
+						//taResult.setText(taResult.getText()+"\n"+gerente.get(".1.3.6.1.2.1.1.3.0"));
+						//taResult.clear();
+						taResult.setText(taResult.getText()+"\n"+gerente.get(tfOID.getText()));
+						break;
+
+					case "GetNext":
+						taResult.setText(taResult.getText()+"\n"+gerente.getnext(tfOID.getText()));
+						break;
+
+					case "Set":
+						taResult.setText(taResult.getText()+"\n"+gerente.set());
+						break;
+
+					case "GetBulk":
+						taResult.setText(taResult.getText()+"\n"+gerente.getbulk());
+						break;
+
+					case "Walk":
+						taResult.clear();
+						//taResult.setText(taResult.getText()+"\n"+gerente.walk(".1.3.6.1.2.1.2.2"));
+						taResult.setText(gerente.walk(tfOID.getText()));
+						
+						break;
+
+					case "GetTable":
+						taResult.setText(taResult.getText()+"\n"+gerente.gettable());
+						
+						break;
+
+					case "GetDelta":
+						taResult.setText(taResult.getText()+"\n"+gerente.getdelta());
+						
+						break;
+
+					}
+				} catch (NullPointerException e) {  //exibe alerta caso nenhuma opção seja selecionada para as operações
+					Alert alert = new Alert(AlertType.WARNING);
+					alert.setTitle("Alerta");
+					alert.setHeaderText("Atenção");
+					alert.setContentText("Selecione a operação desejada!");
+					Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+					alert.showAndWait();
+				}
+			}else {
+				Alert alert = new Alert(AlertType.WARNING);
+				alert.setTitle("Alerta");
+				alert.setHeaderText("Atenção");
+				alert.setContentText("Informe o OID do objeto para gerenciar");
+				Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+				alert.showAndWait();
+			}
+			
+		}else {
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("Alerta");
+			alert.setHeaderText("Atenção");
+			alert.setContentText("Informe os dados do host");
+			Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+			alert.showAndWait();
 		}
 	}
 
 	@FXML
 	void limpaResultados(ActionEvent event) {
 		taResult.clear();
+		
 	}
 
 	@FXML
@@ -212,6 +254,8 @@ public class TelaController implements Initializable{
 		tfIp.clear();
 		tfPorta.clear();
 		tfComunidade.clear();
+		gerenteIniciado=false;
+		btGerenciar.setText("Gerenciar");
 	}
 
 	// Itens de menu
@@ -231,6 +275,7 @@ public class TelaController implements Initializable{
 		tfIp.setText("127.0.0.1");
 		tfPorta.setText("161");
 		tfComunidade.setText("public");
+		tfOID.setText(".1.3.6.1.2.1.1.1.0");
 	}
 
 	@FXML
