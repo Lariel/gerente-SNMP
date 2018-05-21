@@ -195,7 +195,7 @@ public class TelaController implements Initializable{
 						break;
 
 					case "GetBulk":
-						taResult.setText(taResult.getText()+"\n"+gerente.getbulk());
+						taResult.setText(taResult.getText()+"\n"+gerente.getbulk(1,4,tfOID.getText())); //n,m
 						break;
 
 					case "Walk":
