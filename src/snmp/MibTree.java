@@ -36,8 +36,6 @@ public class MibTree {
 	}
 	
 	private void addSimpleOids() {
-		//this.simple_oids.add(new Oid("mib-2", ".1.3.6.1.4.1.77.1.4.1.0));
-		
 		this.simple_oids.add(new Oid("sysDescr", ".1.3.6.1.2.1.1.1.0"));
 		this.simple_oids.add(new Oid("sysObjectID", ".1.3.6.1.2.1.1.2.0"));
 		this.simple_oids.add(new Oid("sysUpTime", ".1.3.6.1.2.1.1.3.0"));

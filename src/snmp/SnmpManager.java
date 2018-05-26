@@ -184,7 +184,6 @@ public class SnmpManager {
 		}
 		return saida;
 	}
-
 	
 	/**
      * 

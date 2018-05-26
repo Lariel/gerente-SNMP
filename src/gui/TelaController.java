@@ -116,8 +116,6 @@ public class TelaController implements Initializable{
 		    mibtreeroot.getChildren().addAll(folders);
 		}
 		
-		
-
 		/*
 		 * 
 

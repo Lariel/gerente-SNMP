@@ -38,5 +38,4 @@ public class Oid {
 		return "propriedade= " + propriedade + ", OID= " + oid;
 	}
 	
-	
 }
