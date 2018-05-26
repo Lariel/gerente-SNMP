@@ -41,8 +41,14 @@ public class TelaController implements Initializable{
 	private int porta;
 	private boolean gerenteIniciado=false;
 	private SnmpManager gerente;
+	
 	private MibTree tree;
-	private ArrayList<Oid> treeFolders;
+	private TreeItem<String> mibtreeroot, folder, simple, table, editable;
+	
+	private ArrayList<Oid> listFolder;
+	private ArrayList<Oid> listSimple;
+	private ArrayList<Oid> listTable;
+	private ArrayList<Oid> listEditable;
 	// Itens de Menu
 
 	@FXML // fx:id="miClose"
@@ -78,7 +84,7 @@ public class TelaController implements Initializable{
 	private Button btLimpaResults; // Value injected by FXMLLoader
 
 	@FXML // fx:id="tvMIB"
-	private TreeView<Oid> tvMIB; // Value injected by FXMLLoader
+	private TreeView<String> tvMIB; // Value injected by FXMLLoader
 
 	@FXML // fx:id="tfIp"
 	private TextField tfIp; // Value injected by FXMLLoader
@@ -104,21 +110,58 @@ public class TelaController implements Initializable{
 		taResult.setText("");
 
 		// Root Item
-		TreeItem<Oid> mibtreeroot= new TreeItem<>(new Oid("mib-2", ".1.3.6.1.2.1"));
+		mibtreeroot= new TreeItem<String>(new Oid("mib-2", ".1.3.6.1.2.1").getpropriedade());
 		mibtreeroot.setExpanded(true);
 		tvMIB.setRoot(mibtreeroot);
 
 		tree=new MibTree();
-		treeFolders = tree.getFolder_oids();
 		
-		for(int i=0; i<treeFolders.size();i++) {
-			TreeItem<Oid> folders = new TreeItem<Oid>(treeFolders.get(i));
-		    mibtreeroot.getChildren().addAll(folders);
+		listFolder = tree.getFolder_oids();
+		listSimple = tree.getSimple_oids();
+		listTable = tree.getTables_oids();
+		listEditable = tree.getEditable_oids();
+		
+		for(int i=0; i<listFolder.size();i++) {
+			folder = new TreeItem<String>(listFolder.get(i).getpropriedade());
+		    mibtreeroot.getChildren().addAll(folder);
+		    
+		    for(int j=0; j<listSimple.size();j++) {
+		    	
+		    	if(listSimple.get(j).getOid().substring(0, 15).equals(listFolder.get(i).getOid().substring(0, 14)+".")) {
+		    		
+		    		System.out.println("folders "+listFolder.get(i).getOid());
+		    		System.out.println("simple  "+listSimple.get(j).getOid());
+			    	
+		    		simple = new TreeItem<String>(listSimple.get(j).getpropriedade());
+		    		folder.setExpanded(true);
+		    		folder.getChildren().addAll(simple);
+		    	}
+		    }
 		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		
 		/*
 		 * 
 
+
+for(int i=0; i<listTable.size();i++) {
+			TreeItem<Oid> table = new TreeItem<Oid>(listTable.get(i));
+		    mibtreeroot.getChildren().addAll(table);
+		}
+		
+		
+		for(int i=0; i<listEditable.size();i++) {
+			TreeItem<Oid> editable = new TreeItem<Oid>(listEditable.get(i));
+		    mibtreeroot.getChildren().addAll(editable);
+		}
 
 
 		TreeItem<String> system = new TreeItem<String>("system");
