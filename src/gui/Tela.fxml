@@ -39,6 +39,7 @@
           <Menu mnemonicParsing="false" text="Arquivo">
             <items>
                   <MenuItem fx:id="miTeste" mnemonicParsing="false" onAction="#teste" text="Modo Teste" />
+                  <MenuItem fx:id="miLoadMIB" mnemonicParsing="false" onAction="#loadMIB" text="Load MIB" />
                   <MenuItem fx:id="miLimpaParams" mnemonicParsing="false" onAction="#limpaParametros" text="Limpa Parametros" />
               <MenuItem fx:id="miClose" mnemonicParsing="false" onAction="#fechar" text="Close" />
             </items>
