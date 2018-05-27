@@ -118,45 +118,46 @@ public class TelaController implements Initializable{
 		listTable = tree.getTables_oids();
 		listEditable = tree.getEditable_oids();
 
-		for(int i=0; i<listFolder.size();i++) {
-			folder = new TreeItem<Oid>(listFolder.get(i)); //.getpropriedade()
+		String[] oidFolder, oidSimple, oidTable, oidEditable;
 
-			mibtreeroot.getChildren().addAll(folder);
+		for(int i=0; i<listFolder.size();i++) {  // preencher pastas na árvore
+			folder = new TreeItem<Oid>(listFolder.get(i));
+			mibtreeroot.getChildren().add(folder);
 
-			for(int j=0; j<listSimple.size();j++) {
-
-				if(listSimple.get(j).getOid().substring(0, 15).equals(listFolder.get(i).getOid().substring(0, 14)+".")) {
-
-					//System.out.println("folders "+listFolder.get(i).getOid());
-					//System.out.println("simple  "+listSimple.get(j).getOid());
-
+			oidFolder=listFolder.get(i).getOid().split("\\."); //Split não trabalha com "." 
+			
+			for(int j=0; j<listSimple.size();j++) { // preencher OIDs folha na árvore
+				oidSimple=listSimple.get(j).getOid().split("\\.");
+				
+				if(oidFolder[7].equals(oidSimple[7])) {
 					simple = new TreeItem<Oid>(listSimple.get(j));
-					//folder.setExpanded(true);
-					folder.getChildren().addAll(simple);
+					folder.getChildren().add(simple);
 				}
 			}
+			
+			for(int j=0; j<listTable.size();j++) { // preencher tabelas na árvore
+				oidTable=listTable.get(j).getOid().split("\\.");
+				
+				if(oidFolder[7].equals(oidTable[7])) {
+					table = new TreeItem<Oid>(listTable.get(j));
+					folder.getChildren().add(table);
+				}
+			}
+			
+			for(int j=0; j<listEditable.size();j++) { // preencher OIDs editaveis na árvore
+				oidEditable=listEditable.get(j).getOid().split("\\.");
+				
+				if(oidFolder[7].equals(oidEditable[7])) {
+					editable = new TreeItem<Oid>(listEditable.get(j));
+					folder.getChildren().add(editable);
+				}
+			}
+
 		}
-
-		/*
-		 * 
-
-
-		for(int i=0; i<listTable.size();i++) {
-			TreeItem<Oid> table = new TreeItem<Oid>(listTable.get(i));
-		    mibtreeroot.getChildren().addAll(table);
-		}
-
-
-		for(int i=0; i<listEditable.size();i++) {
-			TreeItem<Oid> editable = new TreeItem<Oid>(listEditable.get(i));
-		    mibtreeroot.getChildren().addAll(editable);
-		}
-		 * 
-		 */
 		
 		tvMIB.getSelectionModel().selectedItemProperty().addListener(
 				(observable, oldValu, newValue) -> {tfOID.setText(newValue.getValue().getOid()); // JDK 8+ lambda exp
-		});
+				});
 
 
 	}
@@ -195,6 +196,9 @@ public class TelaController implements Initializable{
 
 					gerenteIniciado=true;
 					btGerenciar.setText("Gerenciando");
+					cbOperacao.setDisable(false);
+					tfOID.setDisable(false);
+					btExecuta.setDisable(false);
 				}
 			}
 		}
@@ -230,9 +234,6 @@ public class TelaController implements Initializable{
 						taResult.clear();
 						//taResult.setText(taResult.getText()+"\n"+gerente.walk(".1.3.6.1.2.1.2.2"));
 						taResult.setText(gerente.walk(tfOID.getText()));
-
-
-
 						break;
 
 					case "GetTable":

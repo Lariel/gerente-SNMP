@@ -17,8 +17,8 @@
    <children>
       <Pane layoutY="-9.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <ComboBox fx:id="cbOperacao" layoutX="247.0" layoutY="137.0" prefHeight="25.0" prefWidth="213.0" promptText="Selecione a operação desejada:" />
-            <Button fx:id="btExecuta" layoutX="670.0" layoutY="137.0" mnemonicParsing="false" onAction="#executar" prefHeight="25.0" prefWidth="100.0" text="Executa" />
+            <ComboBox fx:id="cbOperacao" disable="true" layoutX="247.0" layoutY="137.0" prefHeight="25.0" prefWidth="213.0" promptText="Selecione a operação desejada:" />
+            <Button fx:id="btExecuta" disable="true" layoutX="670.0" layoutY="137.0" mnemonicParsing="false" onAction="#executar" prefHeight="25.0" prefWidth="100.0" text="Executa" />
             <TextArea fx:id="taResult" editable="false" layoutX="246.0" layoutY="206.0" prefHeight="391.0" prefWidth="654.0" />
             <TreeView fx:id="tvMIB" layoutX="14.0" layoutY="50.0" prefHeight="546.0" prefWidth="200.0" />
             <TextField fx:id="tfIp" layoutX="247.0" layoutY="72.0" prefHeight="25.0" prefWidth="200.0" promptText="informe o IP" />
@@ -31,7 +31,7 @@
             <Button fx:id="btGerenciar" layoutX="801.0" layoutY="72.0" mnemonicParsing="false" onAction="#gerenciar" prefWidth="100.0" text="Gerenciar" />
             <Separator layoutX="247.0" layoutY="106.0" prefHeight="4.0" prefWidth="654.0" />
             <Text layoutX="247.0" layoutY="129.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Operações" />
-            <TextField fx:id="tfOID" layoutX="473.0" layoutY="138.0" prefHeight="25.0" prefWidth="186.0" promptText="informe o OID do objeto" />
+            <TextField fx:id="tfOID" disable="true" layoutX="473.0" layoutY="138.0" prefHeight="25.0" prefWidth="186.0" promptText="informe o OID do objeto" />
          </children>
       </Pane>
       <MenuBar layoutX="275.0" layoutY="14.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">

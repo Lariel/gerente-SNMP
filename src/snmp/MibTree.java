@@ -39,15 +39,15 @@ public class MibTree {
 		this.simple_oids.add(new Oid("sysDescr", ".1.3.6.1.2.1.1.1.0"));
 		this.simple_oids.add(new Oid("sysObjectID", ".1.3.6.1.2.1.1.2.0"));
 		this.simple_oids.add(new Oid("sysUpTime", ".1.3.6.1.2.1.1.3.0"));
-		this.simple_oids.add(new Oid("sysContact", ".1.3.6.1.2.1.1.4.0"));
-		this.simple_oids.add(new Oid("sysName", ".1.3.6.1.2.1.1.5.0"));
-		this.simple_oids.add(new Oid("sysLocation", ".1.3.6.1.2.1.1.6.0"));
+		//this.simple_oids.add(new Oid("sysContact", ".1.3.6.1.2.1.1.4.0"));
+		//this.simple_oids.add(new Oid("sysName", ".1.3.6.1.2.1.1.5.0"));
+		//this.simple_oids.add(new Oid("sysLocation", ".1.3.6.1.2.1.1.6.0"));
 		this.simple_oids.add(new Oid("sysServices", ".1.3.6.1.2.1.1.7.0"));
 
 		this.simple_oids.add(new Oid("ifNumber", ".1.3.6.1.2.1.2.1.0"));
 
-		this.simple_oids.add(new Oid("ipForwarding", ".1.3.6.1.2.1.4.1.0"));
-		this.simple_oids.add(new Oid("ipDefaultTTL", ".1.3.6.1.2.1.4.2.0"));
+		//this.simple_oids.add(new Oid("ipForwarding", ".1.3.6.1.2.1.4.1.0"));
+		//this.simple_oids.add(new Oid("ipDefaultTTL", ".1.3.6.1.2.1.4.2.0"));
 		this.simple_oids.add(new Oid("ipInReceives", ".1.3.6.1.2.1.4.3.0"));
 		this.simple_oids.add(new Oid("ipInHdrErrors", ".1.3.6.1.2.1.4.4.0"));
 		this.simple_oids.add(new Oid("ipInAddrErrors", ".1.3.6.1.2.1.4.5.0"));
@@ -143,7 +143,7 @@ public class MibTree {
 		this.simple_oids.add(new Oid("snmpInSetRequests", ".1.3.6.1.2.1.11.17.0"));
 		this.simple_oids.add(new Oid("snmpInGetResponses", ".1.3.6.1.2.1.11.18.0"));
 		this.simple_oids.add(new Oid("snmpInTraps", ".1.3.6.1.2.1.11.19.0"));
-		this.simple_oids.add(new Oid("snmpEnableAuthenTraps", ".1.3.6.1.2.1.11.30.0"));
+		//this.simple_oids.add(new Oid("snmpEnableAuthenTraps", ".1.3.6.1.2.1.11.30.0"));
 		this.simple_oids.add(new Oid("snmpOutTooBigs", ".1.3.6.1.2.1.11.20.0"));
 		this.simple_oids.add(new Oid("snmpOutNoSuchNames", ".1.3.6.1.2.1.11.21.0"));
 		this.simple_oids.add(new Oid("snmpOutBadValues", ".1.3.6.1.2.1.11.22.0"));
@@ -155,9 +155,9 @@ public class MibTree {
 		this.simple_oids.add(new Oid("snmpOutTraps", ".1.3.6.1.2.1.11.29.0"));
 
 		this.simple_oids.add(new Oid("hrSystemUpTime", ".1.3.6.1.2.1.25.1.1.0"));
-		this.simple_oids.add(new Oid("hrSystemDate", ".1.3.6.1.2.1.25.1.2.0"));
-		this.simple_oids.add(new Oid("hrSystemInitialLoadDevice", ".1.3.6.1.2.1.25.1.3.0"));
-		this.simple_oids.add(new Oid("hrSystemInitialLoadParameters", ".1.3.6.1.2.1.25.1.4.0"));
+		//this.simple_oids.add(new Oid("hrSystemDate", ".1.3.6.1.2.1.25.1.2.0"));
+		//this.simple_oids.add(new Oid("hrSystemInitialLoadDevice", ".1.3.6.1.2.1.25.1.3.0"));
+		//this.simple_oids.add(new Oid("hrSystemInitialLoadParameters", ".1.3.6.1.2.1.25.1.4.0"));
 		this.simple_oids.add(new Oid("hrSystemNumUsers", ".1.3.6.1.2.1.25.1.5.0"));
 		this.simple_oids.add(new Oid("hrSystemProcesses", ".1.3.6.1.2.1.25.1.6.0"));
 		this.simple_oids.add(new Oid("hrSystemMaxProcesses", ".1.3.6.1.2.1.25.1.7.0"));
