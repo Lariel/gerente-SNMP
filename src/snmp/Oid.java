@@ -35,7 +35,7 @@ public class Oid {
 
 	@Override
 	public String toString() {
-		return "propriedade= " + propriedade + ", OID= " + oid;
+		return propriedade;
 	}
 	
 }

@@ -12,6 +12,7 @@ import java.util.ResourceBundle;
 
 
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -41,14 +42,12 @@ public class TelaController implements Initializable{
 	private int porta;
 	private boolean gerenteIniciado=false;
 	private SnmpManager gerente;
-	
+
 	private MibTree tree;
-	private TreeItem<String> mibtreeroot, folder, simple, table, editable;
-	
-	private ArrayList<Oid> listFolder;
-	private ArrayList<Oid> listSimple;
-	private ArrayList<Oid> listTable;
-	private ArrayList<Oid> listEditable;
+	private TreeItem<Oid> mibtreeroot, folder, simple, table, editable;
+
+	private ArrayList<Oid> listFolder, listSimple, listTable, listEditable;
+
 	// Itens de Menu
 
 	@FXML // fx:id="miClose"
@@ -62,9 +61,6 @@ public class TelaController implements Initializable{
 
 	@FXML // fx:id="miSobre"
 	private MenuItem miSobre; // Value injected by FXMLLoader    
-
-	@FXML // fx:id="miLoadMIB"
-	private MenuItem miLoadMIB; // Value injected by FXMLLoader	
 
 	// Itens e ações na tela
 
@@ -84,7 +80,7 @@ public class TelaController implements Initializable{
 	private Button btLimpaResults; // Value injected by FXMLLoader
 
 	@FXML // fx:id="tvMIB"
-	private TreeView<String> tvMIB; // Value injected by FXMLLoader
+	private TreeView<Oid> tvMIB; // Value injected by FXMLLoader
 
 	@FXML // fx:id="tfIp"
 	private TextField tfIp; // Value injected by FXMLLoader
@@ -109,85 +105,58 @@ public class TelaController implements Initializable{
 		tfComunidade.setTooltip(new Tooltip("public"));
 		taResult.setText("");
 
+		//Carregamento dos itens da árvore lateral
 		// Root Item
-		mibtreeroot= new TreeItem<String>(new Oid("mib-2", ".1.3.6.1.2.1").getpropriedade());
+		mibtreeroot= new TreeItem<Oid>(new Oid("mib-2", ".1.3.6.1.2.1"));
 		mibtreeroot.setExpanded(true);
 		tvMIB.setRoot(mibtreeroot);
 
 		tree=new MibTree();
-		
+
 		listFolder = tree.getFolder_oids();
 		listSimple = tree.getSimple_oids();
 		listTable = tree.getTables_oids();
 		listEditable = tree.getEditable_oids();
-		
+
 		for(int i=0; i<listFolder.size();i++) {
-			folder = new TreeItem<String>(listFolder.get(i).getpropriedade());
-		    mibtreeroot.getChildren().addAll(folder);
-		    
-		    for(int j=0; j<listSimple.size();j++) {
-		    	
-		    	if(listSimple.get(j).getOid().substring(0, 15).equals(listFolder.get(i).getOid().substring(0, 14)+".")) {
-		    		
-		    		System.out.println("folders "+listFolder.get(i).getOid());
-		    		System.out.println("simple  "+listSimple.get(j).getOid());
-			    	
-		    		simple = new TreeItem<String>(listSimple.get(j).getpropriedade());
-		    		folder.setExpanded(true);
-		    		folder.getChildren().addAll(simple);
-		    	}
-		    }
+			folder = new TreeItem<Oid>(listFolder.get(i)); //.getpropriedade()
+
+			mibtreeroot.getChildren().addAll(folder);
+
+			for(int j=0; j<listSimple.size();j++) {
+
+				if(listSimple.get(j).getOid().substring(0, 15).equals(listFolder.get(i).getOid().substring(0, 14)+".")) {
+
+					//System.out.println("folders "+listFolder.get(i).getOid());
+					//System.out.println("simple  "+listSimple.get(j).getOid());
+
+					simple = new TreeItem<Oid>(listSimple.get(j));
+					//folder.setExpanded(true);
+					folder.getChildren().addAll(simple);
+				}
+			}
 		}
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+
 		/*
 		 * 
 
 
-for(int i=0; i<listTable.size();i++) {
+		for(int i=0; i<listTable.size();i++) {
 			TreeItem<Oid> table = new TreeItem<Oid>(listTable.get(i));
 		    mibtreeroot.getChildren().addAll(table);
 		}
-		
-		
+
+
 		for(int i=0; i<listEditable.size();i++) {
 			TreeItem<Oid> editable = new TreeItem<Oid>(listEditable.get(i));
 		    mibtreeroot.getChildren().addAll(editable);
 		}
-
-
-		TreeItem<String> system = new TreeItem<String>("system");
-		TreeItem<String> interfaces = new TreeItem<String>("interfaces");
-		TreeItem<String> at = new TreeItem<String>("at");
-		TreeItem<String> ip = new TreeItem<String>("ip");
-		TreeItem<String> icmp = new TreeItem<String>("icmp");
-		TreeItem<String> tcp = new TreeItem<String>("tcp");
-		TreeItem<String> udp = new TreeItem<String>("udp");
-		TreeItem<String> egp = new TreeItem<String>("egp");
-		TreeItem<String> transmission = new TreeItem<String>("transmission");
-		TreeItem<String> snmp = new TreeItem<String>("snmp");
-		TreeItem<String> host = new TreeItem<String>("host");
-
-
-		TreeItem<String> sysDescr = new TreeItem<String>("sysDescr");
-		TreeItem<String> sysObjectID = new TreeItem<String>("sysObjectID");
-
-		// Add Root
-		mibtree.getChildren().addAll(system, interfaces, at, ip, icmp, tcp, udp, egp, transmission, snmp, host);
-		system.getChildren().addAll(sysDescr,sysObjectID);
-
-
-
 		 * 
 		 */
+		
+		tvMIB.getSelectionModel().selectedItemProperty().addListener(
+				(observable, oldValu, newValue) -> {tfOID.setText(newValue.getValue().getOid()); // JDK 8+ lambda exp
+		});
 
 
 	}
@@ -320,45 +289,6 @@ for(int i=0; i<listTable.size();i++) {
 	}
 
 	// Itens de menu
-
-	@FXML
-	void loadMIB(ActionEvent event) {
-
-
-
-		//URL url = getClass().getResource("RFC1213-MIB");
-		//URL url = getClass().getResource("D:/teste.txt");
-
-		//File f = new File(url.toURI());
-
-		//File f = new File("D:\\teste.txt");  //path local destino
-		//File f = new File("D:\\RFC1213-MIB");
-
-
-		//System.out.println(f.getAbsolutePath());
-		//System.out.println(f.getName());
-		//System.out.println(f.getName().length());
-
-
-		//URL url = getClass().getResource("/mibs.ietf/RFC1213-MIB");
-		//File f = new File(url.getPath());
-		//File f=new File("/mibs.ietf/RFC1213-MIB");
-		/*
-		 * 	try {
-			gerente.loadMib(f);
-		} catch (NullPointerException | MibLoaderException | IOException e) {
-			Alert alert = new Alert(AlertType.INFORMATION);
-			alert.setTitle("Alerta");
-			alert.setHeaderText("Arquivo não encontrado");
-			alert.setContentText(e.getMessage());
-			Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-			alert.showAndWait();
-		}
-		 * 
-		 * 
-		 */
-
-	}
 
 	@FXML
 	void sobre(ActionEvent event) {
