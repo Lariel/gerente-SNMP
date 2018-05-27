@@ -15,6 +15,8 @@ public class Main extends Application {
 	public void start(Stage stage) throws IOException {
 		Parent root = FXMLLoader.load(getClass().getResource("Tela.fxml"));
 		Scene scene = new Scene(root);
+
+		scene.getStylesheets().add(Main.class.getResource("application.css").toExternalForm());
 		
 		stage.setScene(scene);
 		stage.setTitle("Gerente SNMP");

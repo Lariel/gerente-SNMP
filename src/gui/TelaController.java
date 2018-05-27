@@ -8,16 +8,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
-
+import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -25,11 +29,18 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
-
+import javafx.util.Duration;
 import snmp.MibTree;
 import snmp.Oid;
 import snmp.SnmpManager;
@@ -94,6 +105,23 @@ public class TelaController implements Initializable{
 	@FXML // fx:id="tfOID"
 	private TextField tfOID; // Value injected by FXMLLoader
 
+	//Popup GetBulk
+	@FXML // fx:id="paGetBulk"
+	private Pane paGetBulk; // Value injected by FXMLLoader
+
+	@FXML // fx:id="tfNonRep"
+	private TextField tfNonRep; // Value injected by FXMLLoader
+
+	@FXML // fx:id="tfmaxRep"
+	private TextField tfmaxRep; // Value injected by FXMLLoader
+
+	@FXML // fx:id="btCancelar"
+	private Button btCancelar; // Value injected by FXMLLoader
+
+	@FXML // fx:id="btEnviar"
+	private Button btEnviar; // Value injected by FXMLLoader
+
+
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -125,28 +153,28 @@ public class TelaController implements Initializable{
 			mibtreeroot.getChildren().add(folder);
 
 			oidFolder=listFolder.get(i).getOid().split("\\."); //Split não trabalha com "." 
-			
+
 			for(int j=0; j<listSimple.size();j++) { // preencher OIDs folha na árvore
 				oidSimple=listSimple.get(j).getOid().split("\\.");
-				
+
 				if(oidFolder[7].equals(oidSimple[7])) {
 					simple = new TreeItem<Oid>(listSimple.get(j));
 					folder.getChildren().add(simple);
 				}
 			}
-			
+
 			for(int j=0; j<listTable.size();j++) { // preencher tabelas na árvore
 				oidTable=listTable.get(j).getOid().split("\\.");
-				
+
 				if(oidFolder[7].equals(oidTable[7])) {
 					table = new TreeItem<Oid>(listTable.get(j));
 					folder.getChildren().add(table);
 				}
 			}
-			
+
 			for(int j=0; j<listEditable.size();j++) { // preencher OIDs editaveis na árvore
 				oidEditable=listEditable.get(j).getOid().split("\\.");
-				
+
 				if(oidFolder[7].equals(oidEditable[7])) {
 					editable = new TreeItem<Oid>(listEditable.get(j));
 					folder.getChildren().add(editable);
@@ -154,7 +182,7 @@ public class TelaController implements Initializable{
 			}
 
 		}
-		
+
 		tvMIB.getSelectionModel().selectedItemProperty().addListener(
 				(observable, oldValu, newValue) -> {tfOID.setText(newValue.getValue().getOid()); // JDK 8+ lambda exp
 				});
@@ -219,7 +247,8 @@ public class TelaController implements Initializable{
 						break;
 
 					case "GetNext":
-						taResult.setText(taResult.getText()+"\n"+gerente.getnext(tfOID.getText()));
+						taResult.setText(taResult.getText()+"\n"+gerente.getnext(tfOID.getText())); //preenche o resultado do primeiro GetNext
+						tfOID.setText(gerente.getnextOid(tfOID.getText())); //atualiza a tdOID com o próximo OID obtido
 						break;
 
 					case "Set":
@@ -227,12 +256,12 @@ public class TelaController implements Initializable{
 						break;
 
 					case "GetBulk":
-						taResult.setText(taResult.getText()+"\n"+gerente.getbulk(1,3,tfOID.getText())); //n,m
+						//abrir popup solicitando NonRepeaters(n) e MaxRepetitions(m)
+						paGetBulk.setVisible(true);
 						break;
 
 					case "Walk":
 						taResult.clear();
-						//taResult.setText(taResult.getText()+"\n"+gerente.walk(".1.3.6.1.2.1.2.2"));
 						taResult.setText(gerente.walk(tfOID.getText()));
 						break;
 
@@ -250,8 +279,8 @@ public class TelaController implements Initializable{
 				} catch (NullPointerException e) {  //exibe alerta caso nenhuma opção seja selecionada para as operações
 					Alert alert = new Alert(AlertType.WARNING);
 					alert.setTitle("Alerta");
-					alert.setHeaderText("Atenção");
-					alert.setContentText("Selecione a operação desejada!");
+					alert.setHeaderText("Selecione a opção desejada");
+					alert.setContentText(e.toString());
 					Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
 					alert.showAndWait();
 				}
@@ -287,6 +316,23 @@ public class TelaController implements Initializable{
 		tfComunidade.clear();
 		gerenteIniciado=false;
 		btGerenciar.setText("Gerenciar");
+	}
+
+	//Popup GetBulk
+	@FXML
+	void enviargb(ActionEvent event) {
+		taResult.setText(taResult.getText()+"\n"+gerente.getbulk(1,3,tfOID.getText())); //n,m
+		tfNonRep.clear();
+		tfmaxRep.clear();
+		paGetBulk.setVisible(false);
+		
+	}
+
+	@FXML
+	void cancelargb(ActionEvent event) {
+		tfNonRep.clear();
+		tfmaxRep.clear();
+		paGetBulk.setVisible(false);
 	}
 
 	// Itens de menu
