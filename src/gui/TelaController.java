@@ -122,7 +122,6 @@ public class TelaController implements Initializable{
 	private Button btEnviar; // Value injected by FXMLLoader
 
 
-
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 
@@ -321,11 +320,19 @@ public class TelaController implements Initializable{
 	//Popup GetBulk
 	@FXML
 	void enviargb(ActionEvent event) {
-		taResult.setText(taResult.getText()+"\n"+gerente.getbulk(Integer.parseInt(tfNonRep.getText()),Integer.parseInt(tfmaxRep.getText()),tfOID.getText())); //n,m
-		tfNonRep.clear();
-		tfmaxRep.clear();
-		paGetBulk.setVisible(false);
-		
+		try {
+			taResult.setText(taResult.getText()+"\n"+gerente.getbulk(Integer.parseInt(tfNonRep.getText()),Integer.parseInt(tfmaxRep.getText()),tfOID.getText())); //n,m
+			tfNonRep.clear();
+			tfmaxRep.clear();
+			paGetBulk.setVisible(false);
+		}catch(NumberFormatException e){
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("Alerta");
+			alert.setHeaderText("Atenção");
+			alert.setContentText("Informe apenas numeros");
+			Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+			alert.showAndWait();
+		}
 	}
 
 	@FXML
