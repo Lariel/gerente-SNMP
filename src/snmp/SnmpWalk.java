@@ -121,6 +121,7 @@ public class SnmpWalk {
 				continua=false;
 			}
 		}
+		saida=saida+"\n____________________________________________\n";
 		return saida;
 	}
 

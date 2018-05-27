@@ -98,6 +98,7 @@ public class SnmpGet {
 			Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
 			alert.showAndWait();
 		} 
+		saida=saida+"\n____________________________________________\n";
 		return saida;
 	}
 }

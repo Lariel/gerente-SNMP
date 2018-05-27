@@ -321,7 +321,7 @@ public class TelaController implements Initializable{
 	//Popup GetBulk
 	@FXML
 	void enviargb(ActionEvent event) {
-		taResult.setText(taResult.getText()+"\n"+gerente.getbulk(1,3,tfOID.getText())); //n,m
+		taResult.setText(taResult.getText()+"\n"+gerente.getbulk(Integer.parseInt(tfNonRep.getText()),Integer.parseInt(tfmaxRep.getText()),tfOID.getText())); //n,m
 		tfNonRep.clear();
 		tfmaxRep.clear();
 		paGetBulk.setVisible(false);
