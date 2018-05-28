@@ -10,6 +10,7 @@ import org.snmp4j.smi.Integer32;
 import org.snmp4j.smi.OID;
 import org.snmp4j.smi.OctetString;
 import org.snmp4j.smi.UdpAddress;
+import org.snmp4j.smi.Variable;
 import org.snmp4j.smi.VariableBinding;
 import org.snmp4j.transport.DefaultUdpTransportMapping;
 
@@ -17,22 +18,21 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 
-public class SnmpGet {
-	private String ip, porta, comunidade, address, oid;
+public class SnmpSet {
+	private String ip, porta, comunidade, oid;
 	private Snmp snmp = null;
 	private PDU pdu = null;
+	private OID Oid = null;
 	
-	public SnmpGet(String oid, SnmpManager gerente) {
+	public SnmpSet(String oid, SnmpManager gerente) {
 		this.ip=gerente.getIp();
 		this.porta=gerente.getPorta();
 		this.comunidade=gerente.getComunidade();
 		this.oid=oid;
 	}
 	
-	public String get() {
-		
-		String saida="";
-
+	public String set(String valor) {
+		String saida=valor;
 		try {
 			TransportMapping transport = new DefaultUdpTransportMapping();
 			transport.listen();
@@ -49,17 +49,19 @@ public class SnmpGet {
 			// Criado PDU
 			//The PDU class represents a SNMP protocol data unit.
 			pdu = new PDU();
-			pdu.add(new VariableBinding(new OID(oid)));
-			pdu.setType(PDU.GET);
+			Oid = new OID(oid);
+			Variable var = new OctetString(valor);
+			VariableBinding vb = new VariableBinding(Oid,var);
+			pdu.add(vb);
+			pdu.setType(PDU.SET);
 			pdu.setRequestID(new Integer32(1));
 
-			//The Snmp class is the core of SNMP4J.
 			// Estabelecida conexão snmp com o objeto
 			snmp = new Snmp(transport);
 
 
 			//enviando request...
-			ResponseEvent response = snmp.get(pdu, comtarget);
+			ResponseEvent response = snmp.set(pdu, comtarget);
 
 			if (response != null) {
 				//recebida a Response
@@ -71,13 +73,11 @@ public class SnmpGet {
 
 				if (errorStatus == PDU.noError){
 					//saida=responsePDU.getVariableBindings().get(0).getOid().toString();  - utilizar se quiser ler o OID
-					saida="Valor: "+responsePDU.getVariableBindings().get(0).getVariable().toString()+
-							"\nOID: "+responsePDU.getVariableBindings().get(0).getOid().toString();
-					
+					saida=responsePDU.getVariableBindings().get(0).getVariable().toString();
 				} else{
 					Alert alert = new Alert(AlertType.WARNING);
 					alert.setTitle("Alerta");
-					alert.setHeaderText("SnmpManager linha 90");
+					alert.setHeaderText("SnmpSet linha 80");
 					alert.setContentText("Error Status = " + errorStatus+"\nError Index = " + errorIndex+"\nError Status Text = " + errorStatusText);
 					Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
 					alert.showAndWait();	
@@ -85,7 +85,7 @@ public class SnmpGet {
 			}else{
 				Alert alert = new Alert(AlertType.WARNING);
 				alert.setTitle("Alerta");
-				alert.setHeaderText("SnmpManager linha 98");
+				alert.setHeaderText("SnmpSet linha 88");
 				alert.setContentText("Timeout");
 				Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
 				alert.showAndWait();	
@@ -95,7 +95,7 @@ public class SnmpGet {
 		} catch (Exception e) {
 			Alert alert = new Alert(AlertType.WARNING);
 			alert.setTitle("Alerta");
-			alert.setHeaderText("SnmpManager linha 108");
+			alert.setHeaderText("SnmpSet linha 98");
 			alert.setContentText("Erro ao enviar requisição para o OID: "+oid+"\n Causa: "+e.toString());
 			Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
 			alert.showAndWait();
@@ -103,4 +103,5 @@ public class SnmpGet {
 		saida=saida+"\n____________________________________________\n";
 		return saida;
 	}
+	
 }

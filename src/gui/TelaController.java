@@ -44,7 +44,7 @@ import javafx.util.Duration;
 import snmp.MibTree;
 import snmp.Oid;
 import snmp.SnmpManager;
-
+import snmp.SnmpSet;
 import util.Valida;
 
 public class TelaController implements Initializable{
@@ -116,10 +116,23 @@ public class TelaController implements Initializable{
 	private TextField tfmaxRep; // Value injected by FXMLLoader
 
 	@FXML // fx:id="btCancelar"
-	private Button btCancelar; // Value injected by FXMLLoader
+	private Button btCancelarGB; // Value injected by FXMLLoader
 
 	@FXML // fx:id="btEnviar"
-	private Button btEnviar; // Value injected by FXMLLoader
+	private Button btEnviarGB; // Value injected by FXMLLoader
+
+	//Popup Set
+    @FXML // fx:id="paSet"
+    private Pane paSet; // Value injected by FXMLLoader
+
+    @FXML // fx:id="tfNovoValor"
+    private TextField tfNovoValor; // Value injected by FXMLLoader
+
+    @FXML // fx:id="btCancelarSet"
+    private Button btCancelarSet; // Value injected by FXMLLoader
+
+    @FXML // fx:id="btEnviarSet"
+    private Button btEnviarSet; // Value injected by FXMLLoader
 
 
 	@Override
@@ -185,6 +198,19 @@ public class TelaController implements Initializable{
 		tvMIB.getSelectionModel().selectedItemProperty().addListener(
 				(observable, oldValu, newValue) -> {tfOID.setText(newValue.getValue().getOid()); // JDK 8+ lambda exp
 				});
+		
+		/*
+		cbOperacao.getSelectionModel().selectedItemProperty().addListener(
+				(observable, oldValu, newValue) -> {
+					System.out.println("teste: "+newValue.toString()); // JDK 8+ lambda exp
+					if(newValue.toString().equals("Set")){
+						paSet.setVisible(true);
+						System.out.println("deu fix: "+newValue.toString()); // JDK 8+ lambda exp
+					}
+				
+				});
+		*/
+		
 
 
 	}
@@ -238,6 +264,7 @@ public class TelaController implements Initializable{
 			if(validador.validarOID(tfOID.getText())) { //OID do objeto foi inforado
 				String op = cbOperacao.getSelectionModel().getSelectedItem();
 				try {
+					//TODO fazer mais um refactor violento aqui, tirar o switch e usar lambdas
 					switch (op){
 					case "Get":
 						//taResult.setText(taResult.getText()+"\n"+gerente.get(".1.3.6.1.2.1.1.3.0"));
@@ -249,13 +276,32 @@ public class TelaController implements Initializable{
 						taResult.setText(taResult.getText()+"\n"+gerente.getnext(tfOID.getText())); //preenche o resultado do primeiro GetNext
 						tfOID.setText(gerente.getnextOid(tfOID.getText())); //atualiza a tdOID com o próximo OID obtido
 						break;
-
+						
+					
 					case "Set":
-						taResult.setText(taResult.getText()+"\n"+gerente.set());
+						boolean editavel=false;
+						for(int i=0;i<listEditable.size();i++) {
+							if(listEditable.get(i).getOid().equals(tfOID.getText())) {
+								btExecuta.setDisable(true);
+								paSet.setVisible(true);
+								editavel=true; //achou algum OID correspodente na lista de editáveis
+							}
+						}
+						
+						if(editavel==false) {  //nao achou
+							Alert alert = new Alert(AlertType.WARNING);
+							alert.setTitle("Alerta");
+							alert.setHeaderText("Atenção");
+							alert.setContentText("Valor não editável");
+							Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+							alert.showAndWait();
+						}
+						
 						break;
-
+					
 					case "GetBulk":
 						//abrir popup solicitando NonRepeaters(n) e MaxRepetitions(m)
+						btExecuta.setDisable(true);
 						paGetBulk.setVisible(true);
 						break;
 
@@ -317,6 +363,22 @@ public class TelaController implements Initializable{
 		btGerenciar.setText("Gerenciar");
 	}
 
+
+	//Popup Set
+	@FXML
+	void enviarSet(ActionEvent event) {
+		taResult.setText(taResult.getText()+"\n"+gerente.set(tfNovoValor.getText(), tfOID.getText()));
+		paSet.setVisible(false);
+		btExecuta.setDisable(false);
+	}
+	
+	@FXML
+	void cancelarset(ActionEvent event) {
+		tfNovoValor.clear();
+		paSet.setVisible(false);
+		btExecuta.setDisable(false);
+	}
+	
 	//Popup GetBulk
 	@FXML
 	void enviargb(ActionEvent event) {
@@ -325,6 +387,7 @@ public class TelaController implements Initializable{
 			tfNonRep.clear();
 			tfmaxRep.clear();
 			paGetBulk.setVisible(false);
+			btExecuta.setDisable(false);
 		}catch(NumberFormatException e){
 			Alert alert = new Alert(AlertType.WARNING);
 			alert.setTitle("Alerta");
@@ -334,12 +397,13 @@ public class TelaController implements Initializable{
 			alert.showAndWait();
 		}
 	}
-
+	
 	@FXML
 	void cancelargb(ActionEvent event) {
 		tfNonRep.clear();
 		tfmaxRep.clear();
 		paGetBulk.setVisible(false);
+		btExecuta.setDisable(false);
 	}
 
 	// Itens de menu

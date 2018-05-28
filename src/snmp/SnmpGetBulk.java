@@ -83,8 +83,12 @@ public class SnmpGetBulk {
 			    if (response.getErrorStatus() == PDU.noError) {
 	                Vector<? extends VariableBinding> vbs = response.getVariableBindings();
 	                for (VariableBinding vb : vbs) {
-	                	saida=saida+vb.getVariable().toString()+"\n";
+	                	//saida=saida+vb.getVariable().toString()+"\n";
 	                    //System.out.println(vb.getVariable().toString());
+	                	
+	                	saida=saida+"\nValor: "+vb.getVariable().toString()+
+	                			"\nOID: "+vb.getOid().toString()+"\n";
+	                	
 			        }
 			    } else {
 			        saida="Error:" + response.getErrorStatusText();
