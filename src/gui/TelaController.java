@@ -27,6 +27,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
@@ -105,6 +106,9 @@ public class TelaController implements Initializable{
 	@FXML // fx:id="tfOID"
 	private TextField tfOID; // Value injected by FXMLLoader
 
+	@FXML // fx:id="tvTabela"
+	private TableView<ObservableList<String>> tvTabela; // Value injected by FXMLLoader
+
 	//Popup GetBulk
 	@FXML // fx:id="paGetBulk"
 	private Pane paGetBulk; // Value injected by FXMLLoader
@@ -122,17 +126,34 @@ public class TelaController implements Initializable{
 	private Button btEnviarGB; // Value injected by FXMLLoader
 
 	//Popup Set
-    @FXML // fx:id="paSet"
-    private Pane paSet; // Value injected by FXMLLoader
+	@FXML // fx:id="paSet"
+	private Pane paSet; // Value injected by FXMLLoader
 
-    @FXML // fx:id="tfNovoValor"
-    private TextField tfNovoValor; // Value injected by FXMLLoader
+	@FXML // fx:id="tfNovoValor"
+	private TextField tfNovoValor; // Value injected by FXMLLoader
 
-    @FXML // fx:id="btCancelarSet"
-    private Button btCancelarSet; // Value injected by FXMLLoader
+	@FXML // fx:id="btCancelarSet"
+	private Button btCancelarSet; // Value injected by FXMLLoader
 
-    @FXML // fx:id="btEnviarSet"
-    private Button btEnviarSet; // Value injected by FXMLLoader
+	@FXML // fx:id="btEnviarSet"
+	private Button btEnviarSet; // Value injected by FXMLLoader
+
+	//Popup GetDelta
+	@FXML // fx:id="paGetDelta"
+	private Pane paGetDelta; // Value injected by FXMLLoader
+
+	@FXML // fx:id="tfAmostras"
+	private TextField tfAmostras; // Value injected by FXMLLoader
+
+	@FXML // fx:id="tfIntervalo"
+	private TextField tfIntervalo; // Value injected by FXMLLoader
+
+	@FXML // fx:id="btCancelarGD"
+	private Button btCancelarGD; // Value injected by FXMLLoader
+
+	@FXML // fx:id="btEnviarGD"
+	private Button btEnviarGD; // Value injected by FXMLLoader
+
 
 
 	@Override
@@ -198,7 +219,7 @@ public class TelaController implements Initializable{
 		tvMIB.getSelectionModel().selectedItemProperty().addListener(
 				(observable, oldValu, newValue) -> {tfOID.setText(newValue.getValue().getOid()); // JDK 8+ lambda exp
 				});
-		
+
 		/*
 		cbOperacao.getSelectionModel().selectedItemProperty().addListener(
 				(observable, oldValu, newValue) -> {
@@ -207,10 +228,10 @@ public class TelaController implements Initializable{
 						paSet.setVisible(true);
 						System.out.println("deu fix: "+newValue.toString()); // JDK 8+ lambda exp
 					}
-				
+
 				});
-		*/
-		
+		 */
+
 
 
 	}
@@ -276,8 +297,8 @@ public class TelaController implements Initializable{
 						taResult.setText(taResult.getText()+"\n"+gerente.getnext(tfOID.getText())); //preenche o resultado do primeiro GetNext
 						tfOID.setText(gerente.getnextOid(tfOID.getText())); //atualiza a tdOID com o próximo OID obtido
 						break;
-						
-					
+
+
 					case "Set":
 						boolean editavel=false;
 						for(int i=0;i<listEditable.size();i++) {
@@ -287,7 +308,7 @@ public class TelaController implements Initializable{
 								editavel=true; //achou algum OID correspodente na lista de editáveis
 							}
 						}
-						
+
 						if(editavel==false) {  //nao achou
 							Alert alert = new Alert(AlertType.WARNING);
 							alert.setTitle("Alerta");
@@ -296,9 +317,9 @@ public class TelaController implements Initializable{
 							Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
 							alert.showAndWait();
 						}
-						
+
 						break;
-					
+
 					case "GetBulk":
 						//abrir popup solicitando NonRepeaters(n) e MaxRepetitions(m)
 						btExecuta.setDisable(true);
@@ -311,13 +332,31 @@ public class TelaController implements Initializable{
 						break;
 
 					case "GetTable":
-						taResult.setText(taResult.getText()+"\n"+gerente.gettable());
+						boolean table=false;
+						for(int i=0;i<listTable.size();i++) {
+							if(listTable.get(i).getOid().equals(tfOID.getText())) {
+								//taResult.setText(taResult.getText()+"\n"+gerente.gettable(tfOID.getText()));
+								tvTabela.setVisible(true);
+								tvTabela=gerente.gettable(tfOID.getText());
+								table=true; //achou algum OID correspodente na lista de editáveis
+							}
+						}
+
+						if(table==false) {  //nao achou
+							Alert alert = new Alert(AlertType.WARNING);
+							alert.setTitle("Alerta");
+							alert.setHeaderText("Atenção");
+							alert.setContentText("Valor não é uma tabela");
+							Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+							alert.showAndWait();
+						}
 
 						break;
 
 					case "GetDelta":
-						taResult.setText(taResult.getText()+"\n"+gerente.getdelta());
-
+						btExecuta.setDisable(true);
+						paGetDelta.setVisible(true);
+						
 						break;
 
 					}
@@ -351,6 +390,7 @@ public class TelaController implements Initializable{
 	@FXML
 	void limpaResultados(ActionEvent event) {
 		taResult.clear();
+		tvTabela.setVisible(false);
 
 	}
 
@@ -371,14 +411,14 @@ public class TelaController implements Initializable{
 		paSet.setVisible(false);
 		btExecuta.setDisable(false);
 	}
-	
+
 	@FXML
 	void cancelarset(ActionEvent event) {
 		tfNovoValor.clear();
 		paSet.setVisible(false);
 		btExecuta.setDisable(false);
 	}
-	
+
 	//Popup GetBulk
 	@FXML
 	void enviargb(ActionEvent event) {
@@ -397,12 +437,39 @@ public class TelaController implements Initializable{
 			alert.showAndWait();
 		}
 	}
-	
+
 	@FXML
 	void cancelargb(ActionEvent event) {
 		tfNonRep.clear();
 		tfmaxRep.clear();
 		paGetBulk.setVisible(false);
+		btExecuta.setDisable(false);
+	}
+
+	//Popup GetDelta
+	@FXML
+	void enviargd(ActionEvent event) throws InterruptedException {
+		try {
+			taResult.setText(taResult.getText()+"\n"+gerente.getdelta(Integer.parseInt(tfAmostras.getText()),Integer.parseInt(tfIntervalo.getText()),tfOID.getText())); //n,m
+			tfAmostras.clear();
+			tfIntervalo.clear();
+			paGetDelta.setVisible(false);
+			btExecuta.setDisable(false);
+		}catch(NumberFormatException e){
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("Alerta");
+			alert.setHeaderText("Atenção");
+			alert.setContentText("Informe apenas numeros");
+			Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+			alert.showAndWait();
+		}
+	}
+
+	@FXML
+	void cancelargd(ActionEvent event) {
+		tfAmostras.clear();
+		tfIntervalo.clear();
+		paGetDelta.setVisible(false);
 		btExecuta.setDisable(false);
 	}
 

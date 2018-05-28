@@ -5,6 +5,7 @@ import org.snmp4j.PDU;
 import org.snmp4j.Snmp;
 import org.snmp4j.TransportMapping;
 import org.snmp4j.event.ResponseEvent;
+import org.snmp4j.event.ResponseListener;
 import org.snmp4j.mp.SnmpConstants;
 import org.snmp4j.smi.Integer32;
 import org.snmp4j.smi.OID;
@@ -23,8 +24,10 @@ public class SnmpSet {
 	private Snmp snmp = null;
 	private PDU pdu = null;
 	private OID Oid = null;
+	private SnmpManager gerente=null;
 	
 	public SnmpSet(String oid, SnmpManager gerente) {
+		this.gerente=gerente;
 		this.ip=gerente.getIp();
 		this.porta=gerente.getPorta();
 		this.comunidade=gerente.getComunidade();
@@ -32,7 +35,7 @@ public class SnmpSet {
 	}
 	
 	public String set(String valor) {
-		String saida=valor;
+		String saida="";
 		try {
 			TransportMapping transport = new DefaultUdpTransportMapping();
 			transport.listen();
@@ -61,6 +64,8 @@ public class SnmpSet {
 
 
 			//enviando request...
+			
+			
 			ResponseEvent response = snmp.set(pdu, comtarget);
 
 			if (response != null) {
@@ -90,6 +95,7 @@ public class SnmpSet {
 				Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
 				alert.showAndWait();	
 			}
+			
 			snmp.close();
 
 		} catch (Exception e) {

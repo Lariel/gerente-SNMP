@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import org.snmp4j.PDU;
 import org.snmp4j.Snmp;
 
+import javafx.collections.ObservableList;
+import javafx.scene.control.TableView;
+
 public class SnmpManager {
 	private String ip, porta, comunidade;
 	private MibTree tree;
@@ -61,19 +64,30 @@ public class SnmpManager {
 		saida = GetBulk.getbulk(n, m);
 		return saida;
 	}
-
-	public String getdelta() {
+	
+	/**
+	 * @param int n numero amostras
+	 * @param int m intervalo tempo
+	 * @param OID
+	 * @throws InterruptedException 
+	 */
+	public String getdelta(int n, int m, String oid) throws InterruptedException {
 		String saida="";
-		saida="get detla";
-
+		//SnmpGetDelta GetDelta = new SnmpGetDelta(oid, this);
+		//saida=GetDelta.getdelta(n, m, oid);
+		
+		Thread tGetDelta = new Thread(new SnmpGetDelta(oid, this, n, m));
+		tGetDelta.start();
+		
 		return saida;
 	}
 
-	public String gettable() {
+	public TableView<ObservableList<String>> gettable(String oid) {
+		TableView<ObservableList<String>> tabela = new TableView<>();
 		String saida="";
-		saida="get table";
-
-		return saida;
+		SnmpGetTable GetTable = new SnmpGetTable(oid, this);
+		tabela=GetTable.gettable();
+		return tabela;
 	}
 
 	public String set(String valor, String oid) {

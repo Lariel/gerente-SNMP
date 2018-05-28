@@ -8,12 +8,14 @@ public class MibTree {
 	private ArrayList<Oid> simple_oids;
 	private ArrayList<Oid> tables_oids;
 	private ArrayList<Oid> editable_oids;
+	private ArrayList<Oid> tableobj_oids;
 	
 	public MibTree() {
 		folder_oids = new ArrayList<Oid>();
 		simple_oids = new ArrayList<Oid>(); 
 		tables_oids = new ArrayList<Oid>(); 
 		editable_oids = new ArrayList<Oid>();
+		tableobj_oids = new ArrayList<Oid>();
 		
 		addFolderOids();
 		addTableOids();
@@ -213,6 +215,10 @@ public class MibTree {
 		this.editable_oids.add(new Oid("hrSystemDate", ".1.3.6.1.2.1.25.1.2.0"));
 		this.editable_oids.add(new Oid("hrSystemInitialLoadDevice", ".1.3.6.1.2.1.25.1.3.0"));
 		this.editable_oids.add(new Oid("hrSystemInitialLoadParameters", ".1.3.6.1.2.1.25.1.4.0"));
+	}
+	
+	private void addTableObjOids() {
+		this.tableobj_oids.add(new Oid("ifEntry", ".1.3.6.1.2.1.2.2.1"));
 	}
 	
 	public ArrayList<Oid> getFolder_oids(){

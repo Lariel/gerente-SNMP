@@ -43,8 +43,6 @@ public class SnmpWalk {
 		
 		vetoroid=oid.split("\\.");
 		
-		System.out.println("oid: "+oid);
-		
 		while(continua) {
 			try {
 				TransportMapping transport = new DefaultUdpTransportMapping();
@@ -79,7 +77,6 @@ public class SnmpWalk {
 					if (errorStatus == PDU.noError)	{
 						//oid=responsePDU.getVariableBindings().get(0).getOid().toString();
 						oidtemp=responsePDU.getVariableBindings().get(0).getOid().toString();
-						System.out.println("oidTemp: "+oidtemp);
 					}else{
 						Alert alert = new Alert(AlertType.WARNING);
 						alert.setTitle("Alerta");
@@ -109,9 +106,6 @@ public class SnmpWalk {
 			}
 			
 			vetoroidtemp=oidtemp.split("\\.");
-			
-			System.out.println("Vetor oid: "+vetoroid[6]);
-			System.out.println("Vetor oidTemp: "+vetoroidtemp[6]);
 			
 			if(vetoroid[7].equals(vetoroidtemp[6])) {
 				SnmpGet Get = new SnmpGet(oid, gerente);
